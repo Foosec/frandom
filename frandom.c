@@ -6,7 +6,6 @@
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/fs.h>
-#include <stddef.h>
 #include <linux/random.h>
 #include <linux/device.h>
 #include <linux/cdev.h>
@@ -60,7 +59,7 @@ uint32_t advance_state(struct xorshift_state *state) {
 
 static struct xorshift_state state;
 
-int init_module(void)
+int frandom_init(void)
 {
     printk(KERN_INFO "Initializing frandom!\n");
     
@@ -72,7 +71,7 @@ int init_module(void)
         return -1;
     }
 
-    dev_class = class_create(THIS_MODULE, DEVICE_NAME);
+    dev_class = class_create(DEVICE_NAME);
     if(dev_class == NULL){
         printk(KERN_ALERT "Class creation failed!\n");
         unregister_chrdev_region(dev_reg, 1);
@@ -106,7 +105,7 @@ int init_module(void)
 }
 
 
-void cleanup_module(void){
+void cleanup_frandom(void){
 
     printk(KERN_INFO "Unloading frandom\n");
 
@@ -160,3 +159,6 @@ static ssize_t device_write(struct file *filp, const char *buf, size_t len, loff
   printk(KERN_ALERT "Attempt to write to frandom\n");
   return -EINVAL;
 }
+
+module_init(frandom_init);
+module_exit(cleanup_frandom);

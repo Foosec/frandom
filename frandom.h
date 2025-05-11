@@ -2,10 +2,9 @@
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/fs.h>
-#include <stddef.h>
 
-int init_module(void);
-void cleanup_module(void);
+int frandom_init(void);
+void cleanup_frandom(void);
 static int device_open(struct inode *, struct file *);
 static int device_release(struct inode *, struct file *);
 static ssize_t device_read(struct file *, char *, size_t, loff_t *);
