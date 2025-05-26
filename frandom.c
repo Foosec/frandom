@@ -59,6 +59,16 @@ uint32_t advance_state(struct xorshift_state *state) {
 
 static struct xorshift_state state;
 
+
+static char *frandom_devnode(const struct device *dev, umode_t *mode)
+{
+	if (!mode)
+		return NULL;
+	
+    *mode = 0666;
+	return NULL;
+}
+
 int frandom_init(void)
 {
     printk(KERN_INFO "Initializing frandom!\n");
@@ -77,6 +87,7 @@ int frandom_init(void)
         unregister_chrdev_region(dev_reg, 1);
         return -1;
     }
+    dev_class->devnode = frandom_devnode;
     struct device *device_t = device_create(dev_class, NULL, dev_reg, NULL, DEVICE_NAME);
     if(device_t == NULL){
         printk(KERN_ALERT "Device creation failed!\n");
